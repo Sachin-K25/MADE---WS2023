@@ -1,93 +1,40 @@
-valuetype verkehrValue oftype text {
-    constraints: [
-        verkehrAllowlist,
-    ];
-}
+pipeline TrainStopPipeline {
+    // Define the pipeline flow
+    CsvHttpExtractor -> CsvTextFileInterpreter -> CsvFileInterpreter -> TrainStopTableInterpreter -> TrainStopLoader;
 
-constraint verkehrAllowlist oftype AllowlistConstraint {
-    allowlist: [
-        "FV",
-        "RV",
-        "nur DPN",
-    ];
-}
-
-valuetype coordinateValue oftype decimal {
-    constraints: [
-        locationRangeConstraint,
-    ];
-}
-
-
-constraint locationRangeConstraint oftype RangeConstraint {
-    lowerBound: -90;
-    upperBound: 90;
-}
-
-valuetype IFOPTValue oftype text {
-    constraints: [
-        IFOPTConstraint,
-    ];
-}
-
-constraint IFOPTConstraint oftype RegexConstraint {
-    regex: /^[a-zA-Z]{2}:\d+:\d+(:\d+)?$/;
-}
-
-valuetype notEmptyText oftype text {
-    constraints: [
-        notEmptyConstraint
-    ];
-}
-
-
-constraint notEmptyConstraint oftype LengthConstraint {
-    minLength: 1;
-}
-
-
-pipeline trainstopsPipeline {
-
-    block extractor oftype HttpExtractor {
+    // HTTP extractor block to fetch the CSV file
+    block CsvHttpExtractor oftype HttpExtractor {
         url: "https://download-data.deutschebahn.com/static/datasets/haltestellen/D_Bahnhof_2020_alle.CSV";
     }
 
-    block textFileInterpreter oftype TextFileInterpreter {
+    // Text file interpreter to convert HTTP response to text
+    block CsvTextFileInterpreter oftype TextFileInterpreter { }
 
-    }
-
-    block CSVInterpreter oftype CSVInterpreter {
+    // CSV interpreter to parse the CSV content
+    block CsvFileInterpreter oftype CSVInterpreter {
         delimiter: ";";
+        enclosing: '"';
     }
 
-    block columnDeleter oftype ColumnDeleter {
-        delete: [column J];
-    }
-
-    block tableInterpreter oftype TableInterpreter {
+    // Table interpreter to define the structure of the database table
+    block TrainStopTableInterpreter oftype TableInterpreter {
         header: true;
         columns: [
             "EVA_NR" oftype integer,
-            "DS100" oftype notEmptyText,
-            "IFOPT" oftype IFOPTValue,
-            "NAME" oftype notEmptyText,
-            "Verkehr" oftype verkehrValue,
-            "Laenge" oftype coordinateValue,
-            "Breite" oftype coordinateValue,
-            "Betreiber_Name" oftype notEmptyText,
+            "DS100" oftype text,
+            "IFOPT" oftype text,
+            "NAME" oftype text,
+            "Verkehr" oftype text,
+            "Laenge" oftype decimal,
+            "Breite" oftype decimal,
+            "Betreiber_Name" oftype text,
             "Betreiber_Nr" oftype integer,
         ];
     }
 
-    block loader oftype SQLiteLoader {
+    // SQLite loader block to load data into the SQLite database
+    block TrainStopLoader oftype SQLiteLoader {
         table: "trainstops";
         file: "./trainstops.sqlite";
     }
-
-    extractor
-        -> textFileInterpreter
-        -> CSVInterpreter
-        -> columnDeleter
-        -> tableInterpreter
-        -> loader;
 }
