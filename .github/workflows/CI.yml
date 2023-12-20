@@ -33,4 +33,4 @@ jobs:
 
       - name: Run tests
         working-directory: "./project"
-        run: sh ./test.sh
+        run: sh ./pipeline.sh
