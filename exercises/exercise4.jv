@@ -25,13 +25,17 @@ pipeline Exercise4Pipeline {
         path: "/data.csv";
     }
     block TemperaturTextFileInterpreter oftype TextFileInterpreter {
-        encoding: "utf8";
-    }
+	      encoding: "utf8";
+	}
     block TemperatureCSVInterpreter oftype CSVInterpreter {
         delimiter: ";";
     }
     block TemperaturColumnDeleter oftype ColumnDeleter {
         delete: [column F, column G, column H, column I,  column L, column M, column N, column O];
+    }
+	
+	block FirstRowDeleter oftype RowDeleter {
+        delete: [row 1];
     }
     block TemperatureTableInterpreter oftype TableInterpreter {
         header: false;
@@ -58,14 +62,15 @@ pipeline Exercise4Pipeline {
         use: CelsiusToFahrenheit;
     }
 
-    block DatabaseLoader oftype SQLiteLoader { table: "temperatures"; file: "temperatures.sqlite"; }
+    block DatabaseLoader oftype SQLiteLoader { table: "temperatures"; file: "./temperatures.sqlite"; }
 
     DataExtractor
-        ->TemperaturZipArchiveInterpreter
+    TemperaturZipArchiveInterpreter
         ->TemperaturFilePicker
         ->TemperaturTextFileInterpreter
         ->TemperatureCSVInterpreter
         ->TemperaturColumnDeleter
+		    ->FirstRowDeleter
         ->TemperatureTableInterpreter
         ->CelsiusToFahrenheit
         ->BatterieCelsiusToFahrenheit
