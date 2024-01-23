@@ -51,13 +51,13 @@ pipeline Exercise4Pipeline {
     }
 
     block CelsiusToFahrenheit oftype TableTransformer {
-        inputColumn: 'Temperatur';
+        inputColumns: 'Temperatur';
         outputColumn: 'Temperatur';
         use: CelsiusToFahrenheit;
     }
 
     block BatterieCelsiusToFahrenheit oftype TableTransformer {
-        inputColumn: 'Batterietemperatur';
+        inputColumns: 'Batterietemperatur';
         outputColumn: 'Batterietemperatur';
         use: CelsiusToFahrenheit;
     }
