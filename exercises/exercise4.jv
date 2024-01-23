@@ -65,12 +65,12 @@ pipeline Exercise4Pipeline {
     block DatabaseLoader oftype SQLiteLoader { table: "temperatures"; file: "./temperatures.sqlite"; }
 
     DataExtractor
-    TemperaturZipArchiveInterpreter
+        ->TemperaturZipArchiveInterpreter
         ->TemperaturFilePicker
         ->TemperaturTextFileInterpreter
         ->TemperatureCSVInterpreter
         ->TemperaturColumnDeleter
-		    ->FirstRowDeleter
+        ->FirstRowDeleter
         ->TemperatureTableInterpreter
         ->CelsiusToFahrenheit
         ->BatterieCelsiusToFahrenheit
