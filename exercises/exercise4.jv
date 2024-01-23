@@ -1,4 +1,4 @@
-transform CelsiusToFahrenheit {
+transform CelsiusTofahrenheit {
   from tempCelsius oftype decimal;
   to tempFahrenheit oftype decimal;
 
@@ -18,23 +18,23 @@ pipeline Exercise4Pipeline {
     block DataExtractor oftype HttpExtractor {
         url: "https://www.mowesta.com/data/measure/mowesta-dataset-20221107.zip";
     }
-    block TemperaturZipArchiveInterpreter oftype ArchiveInterpreter {
+    block TemperatureZipArchiveInterpreter oftype ArchiveInterpreter {
         archiveType: "zip";
     }
-    block TemperaturFilePicker oftype FilePicker {
+    block TemperatureFilePicker oftype FilePicker {
         path: "/data.csv";
     }
-    block TemperaturTextFileInterpreter oftype TextFileInterpreter {
+    block TemperatureTextFileInterpreter oftype TextFileInterpreter {
 	      encoding: "utf8";
 	}
     block TemperatureCSVInterpreter oftype CSVInterpreter {
         delimiter: ";";
     }
-    block TemperaturColumnDeleter oftype ColumnDeleter {
+    block TemperatureColumnDeleter oftype ColumnDeleter {
         delete: [column F, column G, column H, column I,  column L, column M, column N, column O];
     }
 	
-	block FirstRowDeleter oftype RowDeleter {
+	block TemperatureRowDeleter oftype RowDeleter {
         delete: [row 1];
     }
     block TemperatureTableInterpreter oftype TableInterpreter {
@@ -53,26 +53,26 @@ pipeline Exercise4Pipeline {
     block CelsiusToFahrenheit oftype TableTransformer {
         inputColumns: ['Temperatur'];
         outputColumn: 'Temperatur';
-        use: CelsiusToFahrenheit;
+        use: CelsiusTofahrenheit;
     }
 
-    block BatterieCelsiusToFahrenheit oftype TableTransformer {
+    block BattCelsiusToFahrenheit oftype TableTransformer {
         inputColumns: ['Batterietemperatur'];
         outputColumn: 'Batterietemperatur';
-        use: CelsiusToFahrenheit;
+        use: CelsiusTofahrenheit;
     }
 
-    block DatabaseLoader oftype SQLiteLoader { table: "temperatures"; file: "./temperatures.sqlite"; }
+    block DBLoader oftype SQLiteLoader { table: "temperatures"; file: "./temperatures.sqlite"; }
 
     DataExtractor
-        ->TemperaturZipArchiveInterpreter
-        ->TemperaturFilePicker
-        ->TemperaturTextFileInterpreter
+        ->TemperatureZipArchiveInterpreter
+        ->TemperatureFilePicker
+        ->TemperatureTextFileInterpreter
         ->TemperatureCSVInterpreter
-        ->TemperaturColumnDeleter
-        ->FirstRowDeleter
+        ->TemperatureColumnDeleter
+        ->TemperatureRowDeleter
         ->TemperatureTableInterpreter
         ->CelsiusToFahrenheit
-        ->BatterieCelsiusToFahrenheit
-        ->DatabaseLoader;
+        ->BattCelsiusToFahrenheit
+        ->DBLoader;
 }
