@@ -1,0 +1,71 @@
+transform CelsiusToFahrenheit {
+  from tempCelsius oftype decimal;
+  to tempFahrenheit oftype decimal;
+
+  tempFahrenheit: ((tempCelsius * 9/5) + 32);
+}
+
+constraint monatConstraint oftype RangeConstraint {
+    lowerBound: 1;
+    upperBound: 12;
+}
+
+valuetype monat oftype integer {
+    constraints: [monatConstraint];
+}
+
+pipeline Exercise4Pipeline {
+    block DataExtractor oftype HttpExtractor {
+        url: "https://www.mowesta.com/data/measure/mowesta-dataset-20221107.zip";
+    }
+    block TemperaturZipArchiveInterpreter oftype ArchiveInterpreter {
+        archiveType: "zip";
+    }
+    block TemperaturFilePicker oftype FilePicker {
+        path: "/data.csv";
+    }
+    block TemperaturTextFileInterpreter oftype TextFileInterpreter {}
+    block TemperatureCSVInterpreter oftype CSVInterpreter {
+        delimiter: ";";
+    }
+    block TemperaturColumnDeleter oftype ColumnDeleter {
+        delete: [column F, column G, column H, column I,  column L, column M, column N, column O];
+    }
+    block TemperatureTableInterpreter oftype TableInterpreter {
+        header: false;
+        columns: [
+            "Geraet" oftype integer,
+            "Hersteller" oftype text,
+            "Model" oftype text,
+            "Monat" oftype monat,
+            "Temperatur" oftype decimal,
+            "Batterietemperatur" oftype decimal,
+            "Geraet aktiv" oftype text,
+        ];
+    }
+
+    block CelsiusToFahrenheit oftype TableTransformer {
+        inputColumn: 'Temperatur';
+        outputColumn: 'Temperatur';
+        use: CelsiusToFahrenheit;
+    }
+
+    block BatterieCelsiusToFahrenheit oftype TableTransformer {
+        inputColumn: 'Batterietemperatur';
+        outputColumn: 'Batterietemperatur';
+        use: CelsiusToFahrenheit;
+    }
+
+    block DatabaseLoader oftype SQLiteLoader { table: "temperatures"; file: "temperatures.sqlite"; }
+
+    DataExtractor
+        ->TemperaturZipArchiveInterpreter
+        ->TemperaturFilePicker
+        ->TemperaturTextFileInterpreter
+        ->TemperatureCSVInterpreter
+        ->TemperaturColumnDeleter
+        ->TemperatureTableInterpreter
+        ->CelsiusToFahrenheit
+        ->BatterieCelsiusToFahrenheit
+        ->DatabaseLoader;
+}
