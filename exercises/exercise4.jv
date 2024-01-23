@@ -33,10 +33,6 @@ pipeline Exercise4Pipeline {
     block TemperatureColumnDeleter oftype ColumnDeleter {
         delete: [column F, column G, column H, column I,  column L, column M, column N, column O];
     }
-	
-	block TemperatureRowDeleter oftype RowDeleter {
-        delete: [row 1];
-    }
 
     block RenameTemperaturCell oftype CellWriter {
         at: cell E1;
@@ -80,7 +76,6 @@ pipeline Exercise4Pipeline {
         ->TemperatureTextFileInterpreter
         ->TemperatureCSVInterpreter
         ->TemperatureColumnDeleter
-        ->TemperatureRowDeleter
         ->RenameTemperaturCell
         ->RenameBatterieTemperaturCell
         ->TemperatureTableInterpreter
