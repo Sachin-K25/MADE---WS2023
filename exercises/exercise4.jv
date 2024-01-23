@@ -5,13 +5,13 @@ transform CelsiusTofahrenheit {
   tempFahrenheit: ((tempCelsius * 9/5) + 32);
 }
 
-constraint monatConstraint oftype RangeConstraint {
+constraint validationConstraint oftype RangeConstraint {
     lowerBound: 1;
-    upperBound: 12;
+    lowerBoundInclusive: true;
 }
 
-valuetype monat oftype integer {
-    constraints: [monatConstraint];
+valuetype geraet oftype integer {
+    constraints: [validationConstraint];
 }
 
 pipeline Exercise4Pipeline {
