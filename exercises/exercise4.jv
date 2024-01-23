@@ -24,7 +24,9 @@ pipeline Exercise4Pipeline {
     block TemperaturFilePicker oftype FilePicker {
         path: "/data.csv";
     }
-    block TemperaturTextFileInterpreter oftype TextFileInterpreter {}
+    block TemperaturTextFileInterpreter oftype TextFileInterpreter {
+        encoding: "utf8";
+    }
     block TemperatureCSVInterpreter oftype CSVInterpreter {
         delimiter: ";";
     }
