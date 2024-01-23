@@ -43,7 +43,7 @@ pipeline Exercise4Pipeline {
             "Geraet" oftype integer,
             "Hersteller" oftype text,
             "Model" oftype text,
-            "Monat" oftype monat,
+            "Monat" oftype integer,
             "Temperatur" oftype decimal,
             "Batterietemperatur" oftype decimal,
             "Geraet aktiv" oftype text,
