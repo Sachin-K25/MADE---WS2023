@@ -37,6 +37,16 @@ pipeline Exercise4Pipeline {
 	block TemperatureRowDeleter oftype RowDeleter {
         delete: [row 1];
     }
+
+    block RenameTemperaturCell oftype CellWriter {
+        at: cell E1;
+        write: ["Temperatur"]; 
+    }
+
+    block RenameBatterieTemperaturCell oftype CellWriter {
+        at: cell J1;
+        write: ["Batterietemperatur"]; 
+    }  
     block TemperatureTableInterpreter oftype TableInterpreter {
         header: false;
         columns: [
@@ -71,6 +81,8 @@ pipeline Exercise4Pipeline {
         ->TemperatureCSVInterpreter
         ->TemperatureColumnDeleter
         ->TemperatureRowDeleter
+        ->RenameTemperaturCell
+        ->RenameBatterieTemperaturCell
         ->TemperatureTableInterpreter
         ->CelsiusToFahrenheit
         ->BattCelsiusToFahrenheit
