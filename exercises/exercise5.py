@@ -20,7 +20,7 @@ filtered_stops = filtered_stops[(filtered_stops['stop_lat'] >= -90) & (filtered_
 
 database_connection = sqlite3.connect('gtfs.sqlite')
 filtered_stops.to_sql('stops', database_connection, if_exists='replace', index=False, dtype={
-    'stop_id': 'BIGINT',  
+    'stop_id': 'REAL',  
     'stop_name': 'TEXT',
     'stop_lat': 'FLOAT',  
     'stop_lon': 'FLOAT',
