@@ -16,7 +16,7 @@ extracted_stops_file = os.path.join(extracted_folder, "stops.txt")
 stops_df = pd.read_csv(extracted_stops_file)
 stops_df = stops_df[['stop_id', 'stop_name', 'stop_lat', 'stop_lon', 'zone_id']]
 stops_df = stops_df[stops_df['zone_id'] == 2001]
-stops_df = stops_df[(stops_df['stop_lat'] >= -90) & (stops_df['stop_lat'] <= 90) & (stops_df['stop_lon'] >= -180) & (stops_df['stop_lon'] <= 180)]
+stops_df = stops_df[(stops_df['stop_lat'] >= -90) & (stops_df['stop_lat'] <= 90) & (stops_df['stop_lon'] >= -90) & (stops_df['stop_lon'] <= 90)]
 
 database_connection = sqlite3.connect('gtfs.sqlite')
 stops_df.to_sql('stops', database_connection, if_exists='replace', index=False, dtype={
