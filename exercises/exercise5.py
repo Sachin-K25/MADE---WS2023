@@ -19,7 +19,7 @@ filtered_stops = filtered_stops[filtered_stops['zone_id'] == 2001]
 filtered_stops = filtered_stops[(filtered_stops['stop_lat'] >= -90) & (filtered_stops['stop_lat'] <= 90) & (filtered_stops['stop_lon'] >= -180) & (filtered_stops['stop_lon'] <= 180)]
 
 database_connection = sqlite3.connect('gtfs.sqlite')
-filtered_stops.to_sql('filtered_stops', database_connection, if_exists='replace', index=False, dtype={
+filtered_stops.to_sql('stops', database_connection, if_exists='replace', index=False, dtype={
     'stop_id': 'BIGINT',  
     'stop_name': 'TEXT',
     'stop_lat': 'FLOAT',  
